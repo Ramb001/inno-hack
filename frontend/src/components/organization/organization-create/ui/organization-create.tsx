@@ -10,18 +10,22 @@ import {
 } from "@/shared/ui/dialog";
 import { PlusSquare } from "lucide-react";
 import { Input } from "@/shared/ui/input";
+import { useCreateOrganizationMutation } from "@/api/organization-api/organization-api";
 
 export const OrganizationCreate = () => {
   const [organizationName, setOrganizationName] = useState("");
-
+  const [createOrganization] = useCreateOrganizationMutation();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setOrganizationName(e.target.value);
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Здесь добавьте логику для создания организации
-    console.log("Создать организацию:", organizationName);
+    createOrganization({
+      name: organizationName,
+      owner_id: Math.floor(Math.random() * (5000 - 1 + 1) + 1),
+      ref_link: String(Math.floor(Math.random() * (5000 - 1 + 1) + 1)),
+    });
   };
 
   return (
@@ -31,7 +35,7 @@ export const OrganizationCreate = () => {
           <PlusSquare color="black" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="min-h-[300px] min-w-[500px] grid grid-cols-1 grid-rows-2 items-start">
+      <DialogContent className="min-h-[300px] min-w-[500px] flex flex-col justify-between">
         <DialogHeader>
           <DialogTitle>Создать организацию</DialogTitle>
           <DialogDescription>
@@ -39,8 +43,8 @@ export const OrganizationCreate = () => {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={() => handleSubmit} className="flex flex-col gap-4">
-          <label htmlFor="organization-name" className="flex flex-col">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <label htmlFor="organization-name" className="flex flex-col gap-4">
             <span className="text-gray-700">Название организации</span>
             <Input
               id="organization-name"
@@ -52,12 +56,14 @@ export const OrganizationCreate = () => {
               required
             />
           </label>
-          <Button
-            type="submit"
-            className="bg-gray-700 text-white transition duration-200"
-          >
-            Создать
-          </Button>
+          <DialogTrigger asChild>
+            <Button
+              type="submit"
+              className="bg-gray-700 text-white transition duration-200"
+            >
+              Создать
+            </Button>
+          </DialogTrigger>
         </form>
       </DialogContent>
     </Dialog>

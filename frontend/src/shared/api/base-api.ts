@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
+const ORGANIZATION_TAG = "ORGANIZATION";
 export const baseApi = createApi({
-  tagTypes: [],
+  tagTypes: [ORGANIZATION_TAG],
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://46.17.248.71:8000/",
+    baseUrl: "https://api.stask-bot.online/",
   }),
   endpoints: () => ({}),
 });

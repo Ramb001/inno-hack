@@ -13,7 +13,7 @@ import { ScrollArea, ScrollBar } from "@/shared/ui/scroll-area";
 
 export interface Column {
   id: UniqueIdentifier;
-  title: string;
+  status: string;
 }
 
 export type ColumnType = "Column";
@@ -48,7 +48,7 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
       column,
     } satisfies ColumnDragData,
     attributes: {
-      roleDescription: `Column: ${column.title}`,
+      roleDescription: `Column: ${column.status}`,
     },
   });
 
@@ -85,10 +85,10 @@ export function BoardColumn({ column, tasks, isOverlay }: BoardColumnProps) {
           {...listeners}
           className=" p-1 text-primary/50 -ml-2 h-auto cursor-grab relative"
         >
-          <span className="sr-only">{`Move column: ${column.title}`}</span>
+          <span className="sr-only">{`Move column: ${column.status}`}</span>
           <GripVertical />
         </Button>
-        <span className="ml-auto"> {column.title}</span>
+        <span className="ml-auto"> {column.status}</span>
       </CardHeader>
       <ScrollArea>
         <CardContent className="flex flex-grow flex-col gap-2 p-2">
