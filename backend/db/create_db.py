@@ -42,6 +42,7 @@ def create_tables():
                         cur.execute("BEGIN;")
                         cur.execute(command)
                         cur.execute("COMMIT;")
+                        print(f"Команда выполнена: {command}")
                     except (psycopg2.DatabaseError, Exception) as error:
                         print(f"Ошибка при выполнении команды: {command}")
                         print(error)
