@@ -30,7 +30,7 @@ async def add_organization(org: AddOrganization):
                 )
                 org_id = cur.fetchone()[0]
 
-                statuses = ["todo", "in progress", "complete"]
+                statuses = ["todo", "in progress", "done"]
                 for status in statuses:
                     cur.execute(
                         """
