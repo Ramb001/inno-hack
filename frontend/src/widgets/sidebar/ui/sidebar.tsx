@@ -38,7 +38,11 @@ export const Sidebar = () => {
 
       <div className="flex flex-col border rounded-xl gap-3 p-4 bg-gray-50 shadow-inner">
         {organizations?.map((organization) => (
-          <OrganizationItem key={organization.id} name={organization.name} />
+          <OrganizationItem
+            key={organization.id}
+            organizationId={organization.id}
+            name={organization.name}
+          />
         ))}
       </div>
     </aside>
