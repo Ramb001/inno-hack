@@ -12,7 +12,24 @@ def create_tables():
             email VARCHAR(255) NOT NULL,
             name VARCHAR(255) NOT NULL
         )
-    """,
+        """,
+        """
+        CREATE TABLE organizations (
+            id SERIAL PRIMARY KEY,
+            ref_link VARCHAR(255) UNIQUE,
+            name VARCHAR(255) NOT NULL,
+            owner_id INTEGER NOT NULL
+        )
+        """,
+        """
+        CREATE TABLE organization_workers (
+            organization_id INTEGER NOT NULL,
+            role VARCHAR(50),
+            worker_id INTEGER NOT NULL,
+            PRIMARY KEY (organization_id, worker_id),
+            FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
+        )
+        """
     )
 
     try:
