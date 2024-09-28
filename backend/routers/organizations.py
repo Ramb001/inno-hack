@@ -52,7 +52,11 @@ async def add_organization(org: AddOrganization):
         )
 
 
-@router.get("/organizations/organizations", response_model=List[Organization], tags=["organizations"])
+@router.get(
+    "/organizations/organizations",
+    response_model=List[Organization],
+    tags=["organizations"],
+)
 async def get_organizations():
     try:
         with psycopg2.connect(
@@ -62,11 +66,18 @@ async def get_organizations():
                 cur.execute("SELECT id, ref_link, name, owner_id FROM organizations")
                 rows = cur.fetchall()
 
-                organizations = [Organization(id=row[0], ref_link=row[1], name=row[2], owner_id=row[3]) for row in rows]
+                organizations = [
+                    Organization(
+                        id=row[0], ref_link=row[1], name=row[2], owner_id=row[3]
+                    )
+                    for row in rows
+                ]
 
                 return organizations
     except (psycopg2.DatabaseError, Exception) as error:
-        raise HTTPException(status_code=500, detail=f"Ошибка при получении организаций: {str(error)}")
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при получении организаций: {str(error)}"
+        )
 
 
 @router.get(
@@ -256,10 +267,11 @@ async def create_organization_status(
             status_code=500, detail=f"Ошибка при создании статуса: {str(error)}"
         )
 
-@router.post(
-    "/organizations/{organization_id}/join/{user_id}", tags=["organizations"]
-)
-async def join_organization(organization_id: int, user_id: int, data: OrganizationWorkerCreate):
+
+@router.post("/organizations/{organization_id}/add/{user_id}", tags=["organizations"])
+async def join_organization(
+    organization_id: int, user_id: int, data: OrganizationWorkerCreate
+):
     try:
         with psycopg2.connect(
             database="postgres", user="postgres", host="postgres", password="postgres"
@@ -273,7 +285,9 @@ async def join_organization(organization_id: int, user_id: int, data: Organizati
                 org_exists = cur.fetchone()
 
                 if not org_exists:
-                    raise HTTPException(status_code=404, detail="Организация не найдена")
+                    raise HTTPException(
+                        status_code=404, detail="Организация не найдена"
+                    )
 
                 # Check if the user exists
                 cur.execute(
@@ -283,7 +297,9 @@ async def join_organization(organization_id: int, user_id: int, data: Organizati
                 user_exists = cur.fetchone()
 
                 if not user_exists:
-                    raise HTTPException(status_code=404, detail="Пользователь не найден")
+                    raise HTTPException(
+                        status_code=404, detail="Пользователь не найден"
+                    )
 
                 # Check if the user is already in the organization
                 cur.execute(
@@ -308,11 +324,13 @@ async def join_organization(organization_id: int, user_id: int, data: Organizati
                 return {"message": "Вы успешно присоединились к организации"}
     except (psycopg2.DatabaseError, Exception) as error:
         raise HTTPException(
-            status_code=500, detail=f"Ошибка при присоединении к организации: {str(error)}"
+            status_code=500,
+            detail=f"Ошибка при присоединении к организации: {str(error)}",
         )
 
+
 @router.delete(
-    "/organizations/{organization_id}/remove/user/{user_id}", tags=["organizations"]
+    "/organizations/{organization_id}/delete/user/{user_id}", tags=["organizations"]
 )
 async def remove_worker_from_organization(organization_id: int, user_id: int):
     try:
@@ -328,7 +346,9 @@ async def remove_worker_from_organization(organization_id: int, user_id: int):
                 org_exists = cur.fetchone()
 
                 if not org_exists:
-                    raise HTTPException(status_code=404, detail="Организация не найдена")
+                    raise HTTPException(
+                        status_code=404, detail="Организация не найдена"
+                    )
 
                 # Check if the worker is part of the organization
                 cur.execute(
@@ -338,7 +358,9 @@ async def remove_worker_from_organization(organization_id: int, user_id: int):
                 worker_exists = cur.fetchone()
 
                 if not worker_exists:
-                    raise HTTPException(status_code=404, detail="Работник не найден в организации")
+                    raise HTTPException(
+                        status_code=404, detail="Работник не найден в организации"
+                    )
 
                 # Remove the worker from the organization
                 cur.execute(
@@ -354,7 +376,7 @@ async def remove_worker_from_organization(organization_id: int, user_id: int):
         )
 
 
-@router.delete("/organizations/{organization_id}", tags=["organizations"])
+@router.delete("/organizations/{organization_id}/delete", tags=["organizations"])
 async def delete_organization(organization_id: int):
     try:
         with psycopg2.connect(
@@ -369,7 +391,9 @@ async def delete_organization(organization_id: int):
                 org_exists = cur.fetchone()
 
                 if not org_exists:
-                    raise HTTPException(status_code=404, detail="Организация не найдена")
+                    raise HTTPException(
+                        status_code=404, detail="Организация не найдена"
+                    )
 
                 # Delete the organization
                 cur.execute(
