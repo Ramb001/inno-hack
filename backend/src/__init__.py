@@ -1,1 +1,1 @@
-from src.models import Register, Login
+from .models import Register, Login
