@@ -4,6 +4,6 @@ type TaskTableProps = {
   tasks: Task[];
 };
 export const TaskTable = (props: TaskTableProps) => {
-  const { tasks } = props;
+  const {} = props;
   return <div></div>;
 };
