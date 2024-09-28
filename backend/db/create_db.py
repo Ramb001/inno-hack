@@ -6,7 +6,7 @@ import logging
 def create_tables():
     commands = (
         """
-        CREATE TABLE users (
+        CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
@@ -15,7 +15,7 @@ def create_tables():
         )
         """,
         """
-        CREATE TABLE organizations (
+        CREATE TABLE IF NOT EXISTS organizations (
             id SERIAL PRIMARY KEY,
             ref_link VARCHAR(255) UNIQUE,
             name VARCHAR(255) NOT NULL,
@@ -23,7 +23,7 @@ def create_tables():
         )
         """,
         """
-        CREATE TABLE organization_workers (
+        CREATE TABLE IF NOT EXISTS organization_workers (
             organization_id INTEGER NOT NULL,
             role VARCHAR(50),
             worker_id INTEGER NOT NULL,
