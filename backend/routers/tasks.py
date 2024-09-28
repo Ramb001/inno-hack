@@ -195,7 +195,7 @@ async def delete_organization_task(organization_id: int, task_id: int):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/request")
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/requested")
 async def request_organization_task(
     organization_id: int, task_id: int, data: TaskUpdateRequest
 ):
@@ -220,7 +220,7 @@ async def request_organization_task(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/verify")
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/verifed")
 async def verify_organization_task(
     organization_id: int, task_id: int, data: TaskUpdateVerify
 ):
