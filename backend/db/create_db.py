@@ -31,6 +31,14 @@ def create_tables():
             FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
         )
         """,
+        """
+        CREATE TABLE statuses (
+        org_id INTEGER NOT NULL,
+        statuses VARCHAR(255)[],
+        PRIMARY KEY (org_id),
+        FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
+        );
+        """,
     )
 
     try:
