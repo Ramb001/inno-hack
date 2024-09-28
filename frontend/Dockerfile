@@ -1,20 +1,12 @@
-# Этап 1: Сборка приложения
-FROM node:18 AS builder
+# Этап 1: Сборка и запуск приложения
+FROM node:18
 
 WORKDIR /app
 
-COPY ./frontend/package.json ./frontend/yarn.lock ./
+COPY ./frontend/package.json ./frontend/package-lock.json ./
 
-RUN yarn install
+RUN npm install
 
 COPY ./frontend ./
 
-RUN yarn build
-
-FROM nginx:alpine
-
-COPY --from=builder /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["npm", "run", "dev", "--host", "0.0.0.0", "--port", "3000"]
