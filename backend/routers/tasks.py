@@ -80,8 +80,6 @@ async def create_organization_task(organization_id: int, task: Task):
                         organization_id,
                         task.deadline,
                         task.workers,
-                        task.requested,
-                        task.verified,
                     ),
                 )
                 task_id = cur.fetchone()[0]
