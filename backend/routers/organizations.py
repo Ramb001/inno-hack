@@ -8,7 +8,7 @@ router = APIRouter()
 async def add_organization(org: AddOrganization):
     try:
         with psycopg2.connect(
-            database="postgres", user="postgres", host="127.0.0.1", password="postgres"
+            database="postgres", user="postgres", host="postgres", password="postgres"
         ) as conn:
             with conn.cursor() as cur:
                 cur.execute(
@@ -30,7 +30,7 @@ async def add_organization(org: AddOrganization):
 async def get_organizations():
     try:
         with psycopg2.connect(
-            database="postgres", user="postgres", host="127.0.0.1", password="postgres"
+            database="postgres", user="postgres", host="postgres", password="postgres"
         ) as conn:
             with conn.cursor() as cur:
                 cur.execute("SELECT id, ref_link, name, owner_id FROM organizations")
@@ -47,7 +47,7 @@ async def get_organizations():
 async def get_organization_with_workers(organization_id: int):
     try:
         with psycopg2.connect(
-            database="postgres", user="postgres", host="127.0.0.1", password="postgres"
+            database="postgres", user="postgres", host="postgres", password="postgres"
         ) as conn:
             with conn.cursor() as cur:
                 # Получаем данные организации
