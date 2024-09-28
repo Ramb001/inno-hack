@@ -15,10 +15,15 @@ class EmailNotificatior:
         self.smtp = SMTP()
 
     def send_email(self):
-        self.smtp.connect("smtp.yandex.ru", 465)
-        self.smtp.login(self.email, self.password)
+        self.smtp.connect("smtp.yandex.ru", 587)
         date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
         msg = f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}"
+
+        try:
+            self.smtp.login(self.email, self.password)
+        except Exception as e:
+            logging.error(e)
+
         try:
             self.smtp.sendmail(self.email, self.receiver, msg)
         except Exception as e:
