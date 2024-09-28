@@ -4,7 +4,7 @@ import psycopg2
 
 router = APIRouter()
 
-@router.post("/organizations", tags=["organizations"])
+@router.post("/organizations/create", tags=["organizations"])
 async def add_organization(org: AddOrganization):
     try:
         with psycopg2.connect(
@@ -26,21 +26,21 @@ async def add_organization(org: AddOrganization):
         raise HTTPException(status_code=500, detail=f"Ошибка при добавлении организации: {str(error)}")
 
 
-@router.get("/organizations", response_model=List[Organization], tags=["organizations"])
-async def get_organizations():
-    try:
-        with psycopg2.connect(
-            database="postgres", user="postgres", host="postgres", password="postgres"
-        ) as conn:
-            with conn.cursor() as cur:
-                cur.execute("SELECT id, ref_link, name, owner_id FROM organizations")
-                rows = cur.fetchall()
+# @router.get("/organizations/organiztion", response_model=List[Organization], tags=["organizations"])
+# async def get_organizations():
+#     try:
+#         with psycopg2.connect(
+#             database="postgres", user="postgres", host="postgres", password="postgres"
+#         ) as conn:
+#             with conn.cursor() as cur:
+#                 cur.execute("SELECT id, ref_link, name, owner_id FROM organizations")
+#                 rows = cur.fetchall()
                 
-                organizations = [Organization(id=row[0], ref_link=row[1], name=row[2], owner_id=row[3]) for row in rows]
+#                 organizations = [Organization(id=row[0], ref_link=row[1], name=row[2], owner_id=row[3]) for row in rows]
                 
-                return organizations
-    except (psycopg2.DatabaseError, Exception) as error:
-        raise HTTPException(status_code=500, detail=f"Ошибка при получении организаций: {str(error)}")
+#                 return organizations
+#     except (psycopg2.DatabaseError, Exception) as error:
+#         raise HTTPException(status_code=500, detail=f"Ошибка при получении организаций: {str(error)}")
     
 
 @router.get("/organizations/{organization_id}", response_model=OrganizationWithWorkers, tags=["organizations"])

@@ -46,15 +46,28 @@ async def login_user(user: Login):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT * FROM users WHERE username = %s AND password = %s
+                    SELECT username, name, email FROM users WHERE username = %s AND password = %s
                 """,
                     (user.username, user.password),
                 )
                 result = cur.fetchone()
                 if result:
-                    return {"message": "Login successful", "status": "success"}
+                    username, name, email = result
+                    return {
+                        "message": "Login successful",
+                        "status": "success",
+                        "username": username,
+                        "name": name,
+                        "email": email,
+                    }
                 else:
-                    return {"message": "Login failed", "status": "error"}
+                    return {
+                        "message": "Login failed",
+                        "status": "error",
+                    }
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
-        return {"message": "Login failed", "status": "error"}
+        return {
+            "message": "Login failed",
+            "status": "error",
+        }
