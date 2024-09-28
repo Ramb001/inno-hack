@@ -10,7 +10,7 @@ from src.models import (
     TaskUpdateVerify,
 )
 
-from .notifications import EmailNotification
+from utils import EmailNotification
 
 router = APIRouter()
 
