@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db import create_tables
-from routers import users, organizations
+from routers import users, organizations, tasks
 
 # Set up logging
 logging.basicConfig(
@@ -15,6 +15,7 @@ app = FastAPI()
 # Include routers
 app.include_router(users.router)
 app.include_router(organizations.router)
+app.include_router(tasks.router)
 
 # CORS configuration
 origins = ["*"]
