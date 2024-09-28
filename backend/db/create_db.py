@@ -4,7 +4,7 @@ import psycopg2
 
 def create_tables():
     commands = (
-        #sql запрос на создание таблиц бд
+        # sql запрос на создание таблиц бд
     )
 
     try:
@@ -24,7 +24,3 @@ def create_tables():
     except (psycopg2.DatabaseError, Exception) as conn_error:
         print("Ошибка подключения к базе данных")
         print(conn_error)
-    
-
-
-
