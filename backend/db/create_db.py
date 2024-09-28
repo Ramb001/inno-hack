@@ -37,7 +37,7 @@ def create_tables():
         with psycopg2.connect(
             database="postgres",
             user="postgres",
-            host="postgres",
+            host="0.0.0.0",
             port="5432",
             password="postgres",
         ) as conn:
