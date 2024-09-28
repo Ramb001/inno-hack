@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 import psycopg2
 
-from src.models import Task
+from src.models import Task, TaskUpdateStatus, TaskUpdateDeadline, TaskUpdateWorkers
 
 router = APIRouter()
 
@@ -92,10 +92,9 @@ async def create_organization_task(organization_id: int, task: Task):
 
 
 @router.put("/organization/{organization_id}/tasks/{task_id}/update/status")
-async def update_organization_task(organization_id: int, task_id: int, data: dict):
-    status = data.get("status")
-    if status is None:
-        raise HTTPException(status_code=400, detail="Status is required")
+async def update_organization_task(
+    organization_id: int, task_id: int, data: TaskUpdateStatus
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -117,8 +116,10 @@ async def update_organization_task(organization_id: int, task_id: int, data: dic
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/deadline")
-async def update_organization_task_deadline(organization_id: int, task_id: int, data):
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/deadline")
+async def update_organization_task_deadline(
+    organization_id: int, task_id: int, data: TaskUpdateDeadline
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -140,8 +141,10 @@ async def update_organization_task_deadline(organization_id: int, task_id: int, 
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/workers")
-async def update_organization_task_workers(organization_id: int, task_id: int, data):
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/workers")
+async def update_organization_task_workers(
+    organization_id: int, task_id: int, data: TaskUpdateWorkers
+):
     try:
         with psycopg2.connect(
             database="postgres",
