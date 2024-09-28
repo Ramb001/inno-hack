@@ -10,7 +10,7 @@ from src.models import (
 )
 import psycopg2
 import uuid
-
+from utils import delete_user_from_organization_notification, EmailNotificatior
 
 router = APIRouter()
 
@@ -343,10 +343,12 @@ async def remove_worker_from_organization(organization_id: int, user_id: int):
             with conn.cursor() as cur:
                 # Check if the organization exists
                 cur.execute(
-                    "SELECT id FROM organizations WHERE id = %s",
+                    "SELECT id, name FROM organizations WHERE id = %s",
                     (organization_id,),
                 )
-                org_exists = cur.fetchone()
+                data_org = cur.fetchone()
+                org_exists = data_org[0]
+                org_name = data_org[1]
 
                 if not org_exists:
                     raise HTTPException(
@@ -370,7 +372,29 @@ async def remove_worker_from_organization(organization_id: int, user_id: int):
                     "DELETE FROM organization_workers WHERE organization_id = %s AND worker_id = %s",
                     (organization_id, user_id),
                 )
+
+                cur.execute(
+                    """
+                    SELECT id, username, email
+                    FROM users
+                    WHERE id = %s
+                    """,
+                    (user_id,),
+                )
+                row = cur.fetchone()
+                
+                username=row[1] 
+                email=row[2]
+
+                
                 conn.commit()
+
+                msg = delete_user_from_organization_notification(user_name=username, organization_name=org_name)
+                email_notification = EmailNotificatior(
+                    receivers=email,
+                    message=msg
+                )
+                email_notification.send_email('Вы бали удалены из компании')
 
                 return {"message": "Работник успешно удален из организации"}
     except (psycopg2.DatabaseError, Exception) as error:

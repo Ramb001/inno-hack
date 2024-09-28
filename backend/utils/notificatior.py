@@ -10,22 +10,17 @@ import smtplib
 class EmailNotificatior:
     def __init__(
         self,
-        title: str,
-        description: str,
-        deadline: datetime.datetime,
         receivers: list[str],
+        message,
     ):
-        self.title = title
-        self.description = description
-        self.deadline = deadline
         self.email = os.getenv("EMAIL")
         self.password = os.getenv("PASSWORD")
         self.receivers = receivers
-        self.message = f"Новая задача была добавлена: {self.title}\nОписание: {self.description}\nСрок выполнения: {self.deadline}"
+        self.message = message
 
-    def send_email(self):
+    def send_email(self, header):
         msg = MIMEText(self.message, "plain", "utf-8")
-        msg["Subject"] = Header(f"Новая задача была добавлена", "utf-8")
+        msg["Subject"] = Header(header, "utf-8")
         msg["From"] = self.email
         msg["To"] = ", ".join(self.receivers)
 

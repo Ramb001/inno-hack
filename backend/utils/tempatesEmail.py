@@ -1,4 +1,4 @@
-def create_task_notification(title, description, deadline, receivers):
+def create_task_notification(title, description, deadline):
     return f"""
     Здравствуйте!
 
