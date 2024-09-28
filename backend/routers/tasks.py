@@ -1,7 +1,14 @@
 from fastapi import APIRouter, HTTPException
 import psycopg2
 
-from src.models import Task, TaskUpdateStatus, TaskUpdateDeadline, TaskUpdateWorkers
+from src.models import (
+    Task,
+    TaskUpdateStatus,
+    TaskUpdateDeadline,
+    TaskUpdateWorkers,
+    TaskUpdateRequest,
+    TaskUpdateVerify,
+)
 
 router = APIRouter()
 
@@ -188,8 +195,10 @@ async def delete_organization_task(organization_id: int, task_id: int):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/request")
-async def request_organization_task(organization_id: int, task_id: int, data):
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/request")
+async def request_organization_task(
+    organization_id: int, task_id: int, data: TaskUpdateRequest
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -211,8 +220,10 @@ async def request_organization_task(organization_id: int, task_id: int, data):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/verify")
-async def verify_organization_task(organization_id: int, task_id: int, task):
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/verify")
+async def verify_organization_task(
+    organization_id: int, task_id: int, data: TaskUpdateVerify
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -227,7 +238,7 @@ async def verify_organization_task(organization_id: int, task_id: int, task):
                     SET verified = %s
                     WHERE id = %s AND organization_id = %s
                 """,
-                    (task.verified, task_id, organization_id),
+                    (data.verified, task_id, organization_id),
                 )
                 return {"message": "Task verification updated successfully"}
     except psycopg2.Error as e:

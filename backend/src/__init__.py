@@ -6,4 +6,6 @@ from .models import (
     TaskUpdateStatus,
     TaskUpdateDeadline,
     TaskUpdateWorkers,
+    TaskUpdateRequest,
+    TaskUpdateVerify,
 )

@@ -67,3 +67,11 @@ class TaskUpdateDeadline(BaseModel):
 
 class TaskUpdateWorkers(BaseModel):
     workers: List[int]
+
+
+class TaskUpdateRequest(BaseModel):
+    request: bool
+
+
+class TaskUpdateVerify(BaseModel):
+    verified: bool
