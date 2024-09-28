@@ -1,1 +1,1 @@
-from .notificatior import EmailNotification
+from .notificatior import EmailNotificatior

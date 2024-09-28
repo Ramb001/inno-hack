@@ -6,7 +6,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-class EmailNotification:
+class EmailNotificatior:
     def __init__(self, message: str, receiver: str):
         self.email = os.getenv("EMAIL")
         self.password = os.getenv("PASSWORD")
