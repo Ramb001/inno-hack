@@ -29,7 +29,7 @@ def create_tables():
             PRIMARY KEY (organization_id, worker_id),
             FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
         )
-        """
+        """,
     )
 
     try:
