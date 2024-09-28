@@ -164,7 +164,7 @@ async def add_worker_to_organization(
                 # Проверяем, не состоит ли пользователь уже в организации
                 cur.execute(
                     """
-                    SELECT id FROM organization_workers 
+                    SELECT organization_id FROM organization_workers 
                     WHERE organization_id = %s AND worker_id = %s
                     """,
                     (organization_id, user_id),
