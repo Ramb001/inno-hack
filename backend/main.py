@@ -3,7 +3,7 @@ import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from db import create_tables
+# from db import create_tables
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -24,6 +24,6 @@ app.add_middleware(
 )
 
 
-@app.on_event("startup")
-def startup_event():
-    create_tables()
+# @app.on_event("startup")
+# def startup_event():
+#     create_tables()
