@@ -87,3 +87,42 @@ async def get_organization_with_workers(organization_id: int):
                 return OrganizationWithWorkers(organization=organization, workers=workers)
     except (psycopg2.DatabaseError, Exception) as error:
         raise HTTPException(status_code=500, detail=f"Ошибка при получении организации и её работников: {str(error)}")
+    
+
+@router.post("/organizations/{organization_id}/add/user/{user_id}", tags=["organizations"])
+async def add_worker_to_organization(organization_id: int, worker_id: int, role: str):
+    try:
+        # Проверяем, существует ли организация
+        with psycopg2.connect(
+            database="postgres",
+            user="postgres",
+            host="postgres",
+            password="postgres",
+            port="5432",
+        ) as conn:
+            with conn.cursor() as cur:
+                # Проверяем, существует ли организация
+                cur.execute(
+                    """
+                    SELECT id FROM organizations WHERE id = %s
+                    """,
+                    (organization_id,)
+                )
+                org_exists = cur.fetchone()
+                
+                if not org_exists:
+                    raise HTTPException(status_code=404, detail="Организация не найдена")
+
+                # Добавляем работника в организацию
+                cur.execute(
+                    """
+                    INSERT INTO organization_workers (organization_id, role, worker_id)
+                    VALUES (%s, %s, %s)
+                    """,
+                    (organization_id, role, worker_id),
+                )
+                conn.commit()
+                
+                return {"message": "Работник успешно добавлен в организацию"}
+    except (psycopg2.DatabaseError, Exception) as error:
+        raise HTTPException(status_code=500, detail=f"Ошибка при добавлении работника: {str(error)}")
