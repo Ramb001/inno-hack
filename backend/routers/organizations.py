@@ -29,8 +29,8 @@ async def add_organization(org: AddOrganization):
                     (org.ref_link, org.name, org.owner_id),
                 )
                 org_id = cur.fetchone()[0]
-                
-                statuses = ['todo', 'in progress', 'complete']
+
+                statuses = ["todo", "in progress", "complete"]
                 for status in statuses:
                     cur.execute(
                         """
@@ -39,10 +39,9 @@ async def add_organization(org: AddOrganization):
                         """,
                         (org_id, status),
                     )
-                
+
                 conn.commit()
 
-                
                 return {
                     "organization_id": org_id,
                     "message": "Организация успешно создана",
@@ -216,13 +215,12 @@ async def get_organization_statuses(organization_id: int):
         ) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT status FROM statuses WHERE org_id = %s",
+                    "SELECT status, id FROM statuses WHERE org_id = %s",
                     (organization_id,),
                 )
-                result = cur.fetchone()
+                result = cur.fetchall()
                 if result:
-                    statuses = result[0]
-                    return statuses
+                    return [{"status": status[0], "id": status[1]} for status in result]
                 else:
                     return []
     except (psycopg2.DatabaseError, Exception) as error:
