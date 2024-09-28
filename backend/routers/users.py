@@ -2,6 +2,7 @@ import aiohttp
 from fastapi import APIRouter, HTTPException
 import psycopg2
 import os
+import logging
 
 from src.models import Register, Login, UserOrganization
 from typing import List
@@ -24,11 +25,18 @@ async def create_user(user: Register):
                     """
                     INSERT INTO users (username, password, email, name)
                     VALUES (%s, %s, %s, %s)
+                    RETURNING id;
                 """,
                     (user.username, user.password, user.email, user.name),
                 )
+                user_id = cur.fetchone()[0]
                 conn.commit()
-        return {"message": "User registered successfully", "status": "success"}
+        return {
+            "message": "User registered successfully",
+            "status": "success",
+            "user_id": user_id,
+            "email": user.email,
+        }
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
         return {"message": "User registered failed", "status": "error"}
@@ -47,19 +55,20 @@ async def login_user(user: Login):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    SELECT username, name, email FROM users WHERE username = %s AND password = %s
+                    SELECT id, username, name, email FROM users WHERE username = %s AND password = %s
                 """,
                     (user.username, user.password),
                 )
                 result = cur.fetchone()
                 if result:
-                    username, name, email = result
+                    id, username, name, email = result
                     return {
                         "message": "Login successful",
                         "status": "success",
                         "username": username,
                         "name": name,
                         "email": email,
+                        "user_id": id,
                     }
                 else:
                     return {
@@ -67,7 +76,7 @@ async def login_user(user: Login):
                         "status": "error",
                     }
     except (psycopg2.DatabaseError, Exception) as error:
-        print(error)
+        logging.error(error)
         return {
             "message": "Login failed",
             "status": "error",
