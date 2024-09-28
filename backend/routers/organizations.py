@@ -215,7 +215,7 @@ async def get_organization_statuses(organization_id: int):
         ) as conn:
             with conn.cursor() as cur:
                 cur.execute(
-                    "SELECT statuses, id FROM statuses WHERE org_id = %s",
+                    "SELECT status, id FROM statuses WHERE org_id = %s",
                     (organization_id,),
                 )
                 result = cur.fetchall()
