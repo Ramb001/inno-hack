@@ -34,7 +34,7 @@ async def add_organization(org: AddOrganization):
                 for status in statuses:
                     cur.execute(
                         """
-                        INSERT INTO statuses (organization_id, status)
+                        INSERT INTO statuses (org_id, status)
                         VALUES (%s, %s);
                         """,
                         (org_id, status),
