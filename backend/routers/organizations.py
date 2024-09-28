@@ -9,6 +9,8 @@ from src.models import (
     OrganizationStatusCreate,
 )
 import psycopg2
+import uuid
+
 
 router = APIRouter()
 
@@ -26,8 +28,9 @@ async def add_organization(org: AddOrganization):
                     VALUES (%s, %s, %s)
                     RETURNING id;
                     """,
-                    (org.ref_link, org.name, org.owner_id),
+                    (str(uuid.uuid4())[:8], org.name, org.owner_id),
                 )
+
                 org_id = cur.fetchone()[0]
 
                 statuses = ["todo", "in progress", "done"]
