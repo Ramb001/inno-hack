@@ -36,24 +36,24 @@ services:
       timeout: 5s
       retries: 5
 
-  frontend:
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-    ports:
-      - "3000:80"
-    networks:
-      - app-network
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./frontend/Dockerfile
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - app-network
 
-  telegram-bot:
-    build:
-      context: .
-      dockerfile: ./telegram-bot/Dockerfile
-    networks:
-      - app-network
-    depends_on:
-      - postgres # Убедитесь, что PostgreSQL запускается перед ботом
-    # Здесь также можно добавить healthcheck, если необходимо
+  # telegram-bot:
+  #   build:
+  #     context: .
+  #     dockerfile: ./telegram-bot/Dockerfile
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - postgres # Убедитесь, что PostgreSQL запускается перед ботом
+  #   # Здесь также можно добавить healthcheck, если необходимо
 
 networks:
   app-network:
