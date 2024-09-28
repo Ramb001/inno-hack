@@ -52,7 +52,6 @@ def create_tables():
             workers INTEGER[],
             requested BOOLEAN DEFAULT FALSE,
             verified BOOLEAN DEFAULT FALSE,
-            PRIMARY KEY (id),
             FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
         )
         """,
