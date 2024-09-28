@@ -17,7 +17,6 @@ class OrganizationWorker(BaseModel):
 
 class AddOrganization(BaseModel):
     name: str
-    ref_link: str
     owner_id: int
 
 
