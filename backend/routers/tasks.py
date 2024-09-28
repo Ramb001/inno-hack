@@ -91,11 +91,26 @@ async def create_organization_task(organization_id: int, task: Task):
                     ),
                 )
                 task_id = cur.fetchone()[0]
+
+                emails = []
+
+                for worker in task.workers:
+                    cur.execute(
+                        """
+                    SELECT u.email
+                    FROM users u
+                    WHERE id = %s
+                """,
+                        (worker,),
+                    )
+                    row = cur.fetchone()
+                    emails.append(row[0])
+
                 email_notification = EmailNotificatior(
                     title=task.title,
                     description=task.description,
                     deadline=task.deadline,
-                    receivers=["fynjybq_njyz1@mail.ru", "fynjybq_njyz2@mail.ru"],
+                    receivers=emails,
                 )
                 email_notification.send_email()
                 return {
