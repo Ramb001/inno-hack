@@ -1,0 +1,2 @@
+aiohttp
+fastapi==0.70.0
