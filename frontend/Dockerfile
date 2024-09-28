@@ -4,8 +4,8 @@ FROM node:16
 # Set the working directory to /app
 WORKDIR /app
 
-# Copy the package.json and package-lock.json to the working directory
-COPY ./package*.json ./
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
 
 # Install the dependencies
 RUN npm install
@@ -13,7 +13,7 @@ RUN npm install
 # Copy the remaining application files to the working directory
 COPY . .
 
-# Build the application
+# Build the application (if applicable, e.g., for React apps)
 RUN npm run build
 
 # Expose port 3000 for the application
