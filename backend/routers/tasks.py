@@ -13,7 +13,7 @@ from src.models import (
 router = APIRouter()
 
 
-@router.get("/organization/{organization_id}/tasks")
+@router.get("/organization/{organization_id}/tasks", tags=["tasks"])
 async def get_organization_tasks(organization_id: int):
     try:
         with psycopg2.connect(
@@ -63,7 +63,7 @@ async def get_organization_tasks(organization_id: int):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/create")
+@router.post("/organization/{organization_id}/tasks/create", tags=["tasks"])
 async def create_organization_task(organization_id: int, task: Task):
     try:
         with psycopg2.connect(
@@ -98,7 +98,9 @@ async def create_organization_task(organization_id: int, task: Task):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/status")
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/status", tags=["tasks"]
+)
 async def update_organization_task(
     organization_id: int, task_id: int, data: TaskUpdateStatus
 ):
@@ -123,7 +125,9 @@ async def update_organization_task(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/deadline")
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/deadline", tags=["tasks"]
+)
 async def update_organization_task_deadline(
     organization_id: int, task_id: int, data: TaskUpdateDeadline
 ):
@@ -148,7 +152,9 @@ async def update_organization_task_deadline(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/workers")
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/workers", tags=["tasks"]
+)
 async def update_organization_task_workers(
     organization_id: int, task_id: int, data: TaskUpdateWorkers
 ):
@@ -173,7 +179,7 @@ async def update_organization_task_workers(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.delete("/organization/{organization_id}/tasks/{task_id}/delete")
+@router.delete("/organization/{organization_id}/tasks/{task_id}/delete", tags=["tasks"])
 async def delete_organization_task(organization_id: int, task_id: int):
     try:
         with psycopg2.connect(
@@ -195,7 +201,9 @@ async def delete_organization_task(organization_id: int, task_id: int):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/requested")
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/requested", tags=["tasks"]
+)
 async def request_organization_task(
     organization_id: int, task_id: int, data: TaskUpdateRequest
 ):
@@ -220,7 +228,9 @@ async def request_organization_task(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/verified")
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/verified", tags=["tasks"]
+)
 async def verify_organization_task(
     organization_id: int, task_id: int, data: TaskUpdateVerify
 ):
