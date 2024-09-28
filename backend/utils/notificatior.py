@@ -1,7 +1,7 @@
 import os
 import datetime
 import logging
-from smtplib import SMTP
+from smtplib import SMTP, SMTP_SSL
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -12,15 +12,18 @@ class EmailNotificatior:
         self.password = os.getenv("PASSWORD")
         self.message = message
         self.receiver = receiver
-        self.smtp = SMTP()
+        self.smtp = SMTP_SSL()
 
     def send_email(self):
-        self.smtp.connect("smtp.yandex.ru", 465)
+        self.smtp.connect("smtp.yandex.ru", 587)
         date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        msg = MIMEText(
-            f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}",
-            "plain",
-            "utf-8",
+        msg = MIMEMultipart()
+        msg.attach(
+            MIMEText(
+                f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}",
+                "plain",
+                "utf-8",
+            )
         )
 
         try:
