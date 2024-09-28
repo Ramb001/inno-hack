@@ -220,7 +220,7 @@ async def request_organization_task(
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/verifed")
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/verified")
 async def verify_organization_task(
     organization_id: int, task_id: int, data: TaskUpdateVerify
 ):
