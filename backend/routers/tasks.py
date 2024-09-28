@@ -38,18 +38,17 @@ async def get_organization_tasks(organization_id: int):
                         "created_at": row[5],
                         "updated_at": row[6],
                         "deadline": row[7],
-                        "workers": row[8],
                         "requested": row[9],
                         "verified": row[10],
-                        "worker_usernames": [row[11]] if row[11] else [],
+                        "workers": [{"name": row[11]}] if row[11] else [],
                     }
-                    # Merge worker usernames for tasks with multiple workers
+                    # Merge workers for tasks with multiple workers
                     existing_task = next(
                         (t for t in tasks if t["id"] == task["id"]), None
                     )
                     if existing_task:
                         if row[11]:
-                            existing_task["worker_usernames"].append(row[11])
+                            existing_task["workers"].append({"name": row[11]})
                     else:
                         tasks.append(task)
                 return tasks
