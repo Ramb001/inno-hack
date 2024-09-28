@@ -4,7 +4,7 @@ export const baseApi = createApi({
   tagTypes: [],
 
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://jsonplaceholder.typicode.com/'",
+    baseUrl: "http://46.17.248.71:8000/",
   }),
   endpoints: () => ({}),
 });
