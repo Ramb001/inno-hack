@@ -27,7 +27,7 @@ export const LoginPage = () => {
   const [userRegister] = useRegisterMutation();
 
   useEffect(() => {
-    if (sessionStorage.getItem("userId")) navigate("/main");
+    if (sessionStorage.getItem("userData")) navigate("/main");
   });
 
   function signIn() {
@@ -43,10 +43,15 @@ export const LoginPage = () => {
           console.log(data);
           if (data.status === "success") {
             navigate("/main");
-            sessionStorage.setItem("userId", data.user_id);
-            sessionStorage.setItem("userEmail", data.email);
-            sessionStorage.setItem("userName", data.name);
-            sessionStorage.setItem("userLogin", data.username);
+            sessionStorage.setItem(
+              "userData",
+              JSON.stringify({
+                id: data.user_id,
+                email: data.email,
+                name: data.email,
+                login: data.username,
+              })
+            );
           } else setIsLoginSuccess(false);
         });
   }

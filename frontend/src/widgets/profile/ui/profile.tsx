@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { Avatar, AvatarImage, AvatarFallback } from "@/shared/ui/avatar";
 import {
   DropdownMenu,
@@ -11,9 +14,14 @@ import {
 import { LogOut } from "lucide-react";
 
 export const Profile = () => {
-  const userName = sessionStorage.getItem("username");
+  const [userData] = useState(JSON.parse(String(sessionStorage.getItem("userData"))));
 
-  console.log(userName);
+  const navigate = useNavigate();
+
+  function logout() {
+    sessionStorage.removeItem("userData");
+    navigate("/");
+  }
 
   return (
     <DropdownMenu>
@@ -21,17 +29,17 @@ export const Profile = () => {
         <Avatar className="">
           <AvatarImage src="" alt="@avatar" />
           <AvatarFallback className="duration-200 hover:bg-gray-200">
-            {userName?.slice(0, 1) ?? "PR"}
+            {userData?.name?.slice(0, 1) ?? "PR"}
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel>{userName ?? "Имя аккаунта"}</DropdownMenuLabel>
+        <DropdownMenuLabel>{userData?.name ?? "Имя аккаунта"}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>Профиль</DropdownMenuItem>
         <DropdownMenuItem>GitHub</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="flex-row-reverse justify-between">
+        <DropdownMenuItem onClick={logout} className="flex-row-reverse justify-between">
           <LogOut size={18} color="#9e0000" />
           Выйти
         </DropdownMenuItem>
