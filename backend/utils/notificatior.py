@@ -12,10 +12,9 @@ class EmailNotificatior:
         self.password = os.getenv("PASSWORD")
         self.message = message
         self.receiver = receiver
-        self.smtp = SMTP_SSL()
+        self.smtp = SMTP_SSL("smtp.yandex.ru", 465)
 
     def send_email(self):
-        self.smtp.connect("smtp.yandex.ru", 587)
         date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
         msg = MIMEMultipart()
         msg.attach(
