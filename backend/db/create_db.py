@@ -34,7 +34,11 @@ def create_tables():
 
     try:
         with psycopg2.connect(
-            database="postgres", user="postgres", host="127.0.0.1", password="postgres"
+            database="postgres",
+            user="postgres",
+            host="127.0.0.1",
+            port="5432",
+            password="postgres",
         ) as conn:
             with conn.cursor() as cur:
                 for command in commands:
@@ -42,10 +46,15 @@ def create_tables():
                         cur.execute("BEGIN;")
                         cur.execute(command)
                         cur.execute("COMMIT;")
+                        print(f"Команда выполнена: {command}")
                     except (psycopg2.DatabaseError, Exception) as error:
                         print(f"Ошибка при выполнении команды: {command}")
                         print(error)
                         cur.execute("ROLLBACK;")
+
+                return True
     except (psycopg2.DatabaseError, Exception) as conn_error:
         print("Ошибка подключения к базе данных")
         print(conn_error)
+
+        return False
