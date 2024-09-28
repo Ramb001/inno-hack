@@ -27,10 +27,10 @@ async def create_user(user: Register):
                     (user.username, user.password, user.email, user.name),
                 )
                 conn.commit()
-        return {"message": "User registered successfully"}
+        return {"message": "User registered successfully", "status": "success"}
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
-        raise HTTPException(status_code=500, detail="Internal server error")
+        return {"message": "User registered failed", "status": "error"}
 
 
 @router.post("/users/login", tags=["users"])
@@ -52,9 +52,9 @@ async def login_user(user: Login):
                 )
                 result = cur.fetchone()
                 if result:
-                    return {"message": "Login successful"}
+                    return {"message": "Login successful", "status": "success"}
                 else:
-                    raise HTTPException(status_code=401, detail="Invalid credentials")
+                    return {"message": "Login failed", "status": "error"}
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
-        raise HTTPException(status_code=500, detail="Internal server error")
+        return {"message": "Login failed", "status": "error"}
