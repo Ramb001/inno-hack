@@ -1,3 +1,4 @@
+
 import { ColumnId } from "@/components/task-table";
 import { Badge } from "@/shared/ui/badge";
 import { Button } from "@/shared/ui/button";
@@ -59,6 +60,7 @@ export function TaskCard({ task, isOverlay }: TaskCardProps) {
       },
     },
   });
+
 
   return (
     <Card
