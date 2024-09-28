@@ -1,7 +1,3 @@
 aiohttp
 fastapi==0.70.0
-<<<<<<< HEAD
 uvicorn
-=======
-psycopg2
->>>>>>> eedd1e0511c094aaa0a842266bff897c08240e28
