@@ -75,12 +75,23 @@ async def create_organization_task(organization_id: int, task: Task):
             password="postgres",
         ) as conn:
             with conn.cursor() as cur:
+                # Проверка, существует ли организация
+                cur.execute(
+                    """
+                    SELECT id FROM organizations WHERE id = %s
+                    """,
+                    (organization_id,),
+                )
+                if cur.fetchone() is None:
+                    raise HTTPException(status_code=404, detail="Organization not found")
+
+                # Вставка задачи
                 cur.execute(
                     """
                     INSERT INTO tasks (title, description, status, organization_id, deadline, workers)
                     VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id
-                """,
+                    """,
                     (
                         task.title,
                         task.description,
@@ -92,20 +103,22 @@ async def create_organization_task(organization_id: int, task: Task):
                 )
                 task_id = cur.fetchone()[0]
 
+                # Получение email'ов работников
                 emails = []
-
                 for worker in task.workers:
                     cur.execute(
                         """
-                    SELECT u.email
-                    FROM users u
-                    WHERE id = %s
-                """,
+                        SELECT u.email
+                        FROM users u
+                        WHERE id = %s
+                        """,
                         (worker,),
                     )
                     row = cur.fetchone()
-                    emails.append(row[0])
+                    if row:  # Проверяем, что строка найдена
+                        emails.append(row[0])
 
+                # Создание и отправка уведомления
                 msg = create_task_notification(task.title, task.description, task.deadline)
                 email_notification = EmailNotificatior(
                     receivers=emails,
