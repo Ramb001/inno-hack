@@ -5,6 +5,7 @@ from src.models import (
     List,
     OrganizationWithWorkers,
     OrganizationWorker,
+    OrganizationWorkerCreate,
 )
 import psycopg2
 
@@ -120,15 +121,16 @@ async def get_organization_with_workers(organization_id: int):
 @router.post(
     "/organizations/{organization_id}/add/user/{user_id}", tags=["organizations"]
 )
-async def add_worker_to_organization(organization_id: int, worker_id: int, data):
+async def add_worker_to_organization(
+    organization_id: int, user_id: int, data: OrganizationWorkerCreate
+):
     try:
-        # Проверяем, существует ли организация
         with psycopg2.connect(
             database="postgres",
             user="postgres",
             host="postgres",
-            password="postgres",
             port="5432",
+            password="postgres",
         ) as conn:
             with conn.cursor() as cur:
                 # Проверяем, существует ли организация
@@ -145,13 +147,43 @@ async def add_worker_to_organization(organization_id: int, worker_id: int, data)
                         status_code=404, detail="Организация не найдена"
                     )
 
+                # Проверяем, существует ли пользователь
+                cur.execute(
+                    """
+                    SELECT id FROM users WHERE id = %s
+                    """,
+                    (user_id,),
+                )
+                user_exists = cur.fetchone()
+
+                if not user_exists:
+                    raise HTTPException(
+                        status_code=404, detail="Пользователь не найден"
+                    )
+
+                # Проверяем, не состоит ли пользователь уже в организации
+                cur.execute(
+                    """
+                    SELECT id FROM organization_workers 
+                    WHERE organization_id = %s AND worker_id = %s
+                    """,
+                    (organization_id, user_id),
+                )
+                existing_worker = cur.fetchone()
+
+                if existing_worker:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Пользователь уже состоит в этой организации",
+                    )
+
                 # Добавляем работника в организацию
                 cur.execute(
                     """
                     INSERT INTO organization_workers (organization_id, role, worker_id)
                     VALUES (%s, %s, %s)
                     """,
-                    (organization_id, data.role, worker_id),
+                    (organization_id, data.role, user_id),
                 )
                 conn.commit()
 

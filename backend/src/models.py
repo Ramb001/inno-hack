@@ -42,3 +42,7 @@ class UserOrganization(BaseModel):
     id: int
     name: str
     role: str
+
+
+class OrganizationWorkerCreate(BaseModel):
+    role: str
