@@ -5,13 +5,13 @@ FROM node:16
 WORKDIR /app
 
 # Copy package.json and yarn.lock to the working directory
-COPY package.json yarn.lock ./
+COPY frontend/package.json frontend/yarn.lock ./
 
 # Install the dependencies using Yarn
 RUN yarn install
 
 # Copy the remaining application files to the working directory
-COPY . .
+COPY frontend ./
 
 # Build the application (if applicable)
 RUN yarn build
