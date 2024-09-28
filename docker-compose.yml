@@ -1,16 +1,14 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       PGDATA: /data/postgres
     volumes:
-      - postgres_data:/data/postgres
+      - ./postgres:/data/postgres
     ports:
       - "5432:5432"
-    networks:
-      - app-network
 
   backend:
     build:
