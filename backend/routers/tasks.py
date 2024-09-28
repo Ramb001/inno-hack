@@ -69,8 +69,8 @@ async def create_organization_task(organization_id: int, task: Task):
             with conn.cursor() as cur:
                 cur.execute(
                     """
-                    INSERT INTO tasks (title, description, status, organization_id, deadline, workers,)
-                    VALUES (%s, %s, %s, %s, %s, %s,)
+                    INSERT INTO tasks (title, description, status, organization_id, deadline, workers)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id
                 """,
                     (
