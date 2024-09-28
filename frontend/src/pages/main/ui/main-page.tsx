@@ -1,9 +1,5 @@
-import { KanbanBoard } from "@/components/task-table";
+// import { KanbanBoard } from "@/components/task-table";
 
 export const MainPage = () => {
-  return (
-    <section>
-      <KanbanBoard />
-    </section>
-  );
+  return <section>{/* <KanbanBoard /> */}</section>;
 };

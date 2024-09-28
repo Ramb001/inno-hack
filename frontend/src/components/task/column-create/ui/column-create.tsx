@@ -1,8 +1,8 @@
-import { useCreateOrganizationColumnsMutation } from "@/api/organization-api/organization-api";
+// import { useCreateOrganizationColumnsMutation } from "@/api/organization-api/organization-api";
 import { Button } from "@/shared/ui/button";
 
 export const ColumnCreate = () => {
-  const [createColumn] = useCreateOrganizationColumnsMutation();
+  // const [createColumn] = useCreateOrganizationColumnsMutation();
   //   const onHandleClick = () =>{
   //     createColumn({
 
