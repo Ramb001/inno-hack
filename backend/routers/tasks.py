@@ -92,7 +92,7 @@ async def create_organization_task(organization_id: int, task: Task):
 
 
 @router.put("/organization/{organization_id}/tasks/{task_id}/update/status")
-async def update_organization_task(organization_id: int, task_id: int, task):
+async def update_organization_task(organization_id: int, task_id: int, data):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -107,7 +107,7 @@ async def update_organization_task(organization_id: int, task_id: int, task):
                     SET status = %s
                     WHERE id = %s AND organization_id = %s
                 """,
-                    (task.status, task_id, organization_id),
+                    (data.status, task_id, organization_id),
                 )
                 return {"message": "Task status updated successfully"}
     except psycopg2.Error as e:
