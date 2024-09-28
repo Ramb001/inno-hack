@@ -14,7 +14,7 @@ class EmailNotificatior:
         self.receiver = receiver
         self.smtp = SMTP_SSL("smtp.yandex.ru", 465)
 
-    def send_email(self):
+    async def send_email(self):
         date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
         msg = MIMEMultipart()
         msg.attach(
@@ -25,13 +25,6 @@ class EmailNotificatior:
             )
         )
 
-        try:
-            self.smtp.login(self.email, self.password)
-        except Exception as e:
-            logging.error(e)
-
-        try:
-            self.smtp.sendmail(self.email, self.receiver, msg)
-        except Exception as e:
-            logging.error(e)
-        self.smtp.quit()
+        await self.smtp.login(self.email, self.password)
+        await self.smtp.sendmail(self.email, self.receiver, msg)
+        await self.smtp.quit()
