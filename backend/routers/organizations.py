@@ -29,7 +29,20 @@ async def add_organization(org: AddOrganization):
                     (org.ref_link, org.name, org.owner_id),
                 )
                 org_id = cur.fetchone()[0]
+                
+                statuses = ['todo', 'in progress', 'complete']
+                for status in statuses:
+                    cur.execute(
+                        """
+                        INSERT INTO statuses (organization_id, status)
+                        VALUES (%s, %s);
+                        """,
+                        (org_id, status),
+                    )
+                
                 conn.commit()
+
+                
                 return {
                     "organization_id": org_id,
                     "message": "Организация успешно создана",
