@@ -70,7 +70,7 @@ class TaskUpdateWorkers(BaseModel):
 
 
 class TaskUpdateRequest(BaseModel):
-    request: bool
+    requested: bool
 
 
 class TaskUpdateVerify(BaseModel):
