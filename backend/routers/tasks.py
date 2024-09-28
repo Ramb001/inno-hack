@@ -91,8 +91,8 @@ async def create_organization_task(organization_id: int, task: Task):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/status")
-async def update_organization_task(organization_id: int, task_id: int, status: str):
+@router.post("/organization/{organization_id}/tasks/{task_id}/update/status")
+async def update_organization_task(organization_id: int, task_id: int, data):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -107,17 +107,15 @@ async def update_organization_task(organization_id: int, task_id: int, status: s
                     SET status = %s
                     WHERE id = %s AND organization_id = %s
                 """,
-                    (status, task_id, organization_id),
+                    (data.status, task_id, organization_id),
                 )
                 return {"message": "Task status updated successfully"}
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/deadline")
-async def update_organization_task_deadline(
-    organization_id: int, task_id: int, task: Task
-):
+@router.post("/organization/{organization_id}/tasks/{task_id}/update/deadline")
+async def update_organization_task_deadline(organization_id: int, task_id: int, data):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -132,17 +130,15 @@ async def update_organization_task_deadline(
                     SET deadline = %s
                     WHERE id = %s AND organization_id = %s
                 """,
-                    (task.deadline, task_id, organization_id),
+                    (data.deadline, task_id, organization_id),
                 )
                 return {"message": "Task deadline updated successfully"}
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.put("/organization/{organization_id}/tasks/{task_id}/update/workers")
-async def update_organization_task_workers(
-    organization_id: int, task_id: int, task: Task
-):
+@router.post("/organization/{organization_id}/tasks/{task_id}/update/workers")
+async def update_organization_task_workers(organization_id: int, task_id: int, data):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -157,7 +153,7 @@ async def update_organization_task_workers(
                     SET workers = %s
                     WHERE id = %s AND organization_id = %s
                 """,
-                    (task.workers, task_id, organization_id),
+                    (data.workers, task_id, organization_id),
                 )
                 return {"message": "Task workers updated successfully"}
     except psycopg2.Error as e:
