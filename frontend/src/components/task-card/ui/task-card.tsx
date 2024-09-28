@@ -1,32 +1,92 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card";
-import { Task } from "../model/types/task-type";
 
-type TaskCardProps = {
-  task?: Task;
-};
+import { ColumnId } from "@/components/task-table";
+import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
+import { Card, CardContent, CardHeader } from "@/shared/ui/card";
+import type { UniqueIdentifier } from "@dnd-kit/core";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
-export const TaskCard = (props: TaskCardProps) => {
-  const { task } = props;
+import { cva } from "class-variance-authority";
+import { GripVertical } from "lucide-react";
+
+export interface Task {
+  id: UniqueIdentifier;
+  columnId: ColumnId;
+  content: string;
+}
+
+interface TaskCardProps {
+  task: Task;
+  isOverlay?: boolean;
+}
+
+export type TaskType = "Task";
+
+export interface TaskDragData {
+  type: TaskType;
+  task: Task;
+}
+
+export function TaskCard({ task, isOverlay }: TaskCardProps) {
+  const {
+    setNodeRef,
+    attributes,
+    listeners,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: "Task",
+      task,
+    } satisfies TaskDragData,
+    attributes: {
+      roleDescription: "Task",
+    },
+  });
+
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform),
+  };
+
+  const variants = cva("", {
+    variants: {
+      dragging: {
+        over: "ring-2 opacity-30",
+        overlay: "ring-2 ring-primary",
+      },
+    },
+  });
+
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={variants({
+        dragging: isOverlay ? "overlay" : isDragging ? "over" : undefined,
+      })}
+    >
+      <CardHeader className="px-3 py-3 space-between flex flex-row border-b-2 border-secondary relative">
+        <Button
+          variant={"ghost"}
+          {...attributes}
+          {...listeners}
+          className="p-1 text-secondary-foreground/50 -ml-2 h-auto cursor-grab"
+        >
+          <span className="sr-only">Move task</span>
+          <GripVertical />
+        </Button>
+        <Badge variant={"outline"} className="ml-auto font-semibold">
+          Task
+        </Badge>
       </CardHeader>
-      <CardContent>
-        <p>Card Content</p>
+      <CardContent className="px-3 pt-3 pb-6 text-left whitespace-pre-wrap">
+        {task.content}
       </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
     </Card>
   );
-};
+}
