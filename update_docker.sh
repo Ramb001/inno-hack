@@ -1,20 +1,31 @@
-#!/bin/bash
+RESET_DB=false
 
-# Обновление репозитория
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --reset-db) RESET_DB=true ;;
+        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+    esac
+    shift
+done
+
+echo "Updating the repository..."
 git pull
 
-# Остановка всех контейнеров
+if [ "$RESET_DB" = true ]; then
+    echo "Resetting the database: dropping all tables..."
+    python drop_all_tables.py --drop
+else
+    echo "Skipping database reset."
+fi
+
 echo "Stopping all running containers..."
 docker stop $(docker ps -aq)
 
-# Удаление всех контейнеров
 echo "Removing all containers..."
 docker rm $(docker ps -aq)
 
-# Удаление всех образов
 echo "Removing all images..."
 docker rmi $(docker images -q)
 
-# Пересборка и запуск контейнеров
 echo "Building and starting containers..."
 docker compose up --build
