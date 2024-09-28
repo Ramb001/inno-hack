@@ -17,13 +17,10 @@ class EmailNotificatior:
 
     def send_email(self):
         date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        msg = MIMEMultipart()
-        msg.attach(
-            MIMEText(
-                f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}",
-                "plain",
-                "utf-8",
-            )
+        msg = MIMEText(
+            f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}",
+            "plain",
+            "utf-8",
         )
 
         self.smtp.login(self.email, self.password)
