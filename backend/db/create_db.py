@@ -47,6 +47,10 @@ def create_tables():
                         print(f"Ошибка при выполнении команды: {command}")
                         print(error)
                         cur.execute("ROLLBACK;")
+
+                return True
     except (psycopg2.DatabaseError, Exception) as conn_error:
         print("Ошибка подключения к базе данных")
         print(conn_error)
+
+        return False
