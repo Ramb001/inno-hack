@@ -46,3 +46,12 @@ class UserOrganization(BaseModel):
 
 class OrganizationWorkerCreate(BaseModel):
     role: str
+
+
+class Task(BaseModel):
+    title: str
+    description: str
+    status: str
+    organization_id: int
+    deadline: str
+    workers: List[int]

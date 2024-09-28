@@ -32,12 +32,29 @@ def create_tables():
         )
         """,
         """
-        CREATE TABLE statuses (
+        CREATE TABLE IF NOT EXISTS statuses (
         org_id INTEGER NOT NULL,
         statuses VARCHAR(255)[],
         PRIMARY KEY (org_id),
         FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
         );
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS tasks (
+            id SERIAL PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description TEXT,
+            status VARCHAR(255) NOT NULL,
+            organization_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            deadline DATE,
+            workers INTEGER[],
+            requested BOOLEAN DEFAULT FALSE,
+            verified BOOLEAN DEFAULT FALSE,
+            PRIMARY KEY (id),
+            FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
+        )
         """,
     )
 

@@ -1,1 +1,1 @@
-from .models import Register, Login, OrganizationWorkerCreate
+from .models import Register, Login, OrganizationWorkerCreate, Task
