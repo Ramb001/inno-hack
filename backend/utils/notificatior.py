@@ -26,13 +26,6 @@ class EmailNotificatior:
             )
         )
 
-        try:
-            self.smtp.login(self.email, self.password)
-        except Exception as e:
-            logging.error(e)
-
-        try:
-            self.smtp.sendmail(self.email, self.receiver, msg)
-        except Exception as e:
-            logging.error(e)
+        self.smtp.login(self.email, self.password)
+        self.smtp.sendmail(self.email, self.receiver, msg)
         self.smtp.quit()
