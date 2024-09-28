@@ -1,12 +1,19 @@
 from fastapi import APIRouter, HTTPException
 import psycopg2
 
-from src.models import Task
+from src.models import (
+    Task,
+    TaskUpdateStatus,
+    TaskUpdateDeadline,
+    TaskUpdateWorkers,
+    TaskUpdateRequest,
+    TaskUpdateVerify,
+)
 
 router = APIRouter()
 
 
-@router.get("/organization/{organization_id}/tasks")
+@router.get("/organization/{organization_id}/tasks", tags=["tasks"])
 async def get_organization_tasks(organization_id: int):
     try:
         with psycopg2.connect(
@@ -56,7 +63,7 @@ async def get_organization_tasks(organization_id: int):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/create")
+@router.post("/organization/{organization_id}/tasks/create", tags=["tasks"])
 async def create_organization_task(organization_id: int, task: Task):
     try:
         with psycopg2.connect(
@@ -91,8 +98,12 @@ async def create_organization_task(organization_id: int, task: Task):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/status")
-async def update_organization_task(organization_id: int, task_id: int, data):
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/status", tags=["tasks"]
+)
+async def update_organization_task(
+    organization_id: int, task_id: int, data: TaskUpdateStatus
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -114,8 +125,12 @@ async def update_organization_task(organization_id: int, task_id: int, data):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/deadline")
-async def update_organization_task_deadline(organization_id: int, task_id: int, data):
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/deadline", tags=["tasks"]
+)
+async def update_organization_task_deadline(
+    organization_id: int, task_id: int, data: TaskUpdateDeadline
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -137,8 +152,12 @@ async def update_organization_task_deadline(organization_id: int, task_id: int, 
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/workers")
-async def update_organization_task_workers(organization_id: int, task_id: int, data):
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/workers", tags=["tasks"]
+)
+async def update_organization_task_workers(
+    organization_id: int, task_id: int, data: TaskUpdateWorkers
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -160,7 +179,7 @@ async def update_organization_task_workers(organization_id: int, task_id: int, d
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.delete("/organization/{organization_id}/tasks/{task_id}/delete")
+@router.delete("/organization/{organization_id}/tasks/{task_id}/delete", tags=["tasks"])
 async def delete_organization_task(organization_id: int, task_id: int):
     try:
         with psycopg2.connect(
@@ -182,8 +201,12 @@ async def delete_organization_task(organization_id: int, task_id: int):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/request")
-async def request_organization_task(organization_id: int, task_id: int, data):
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/requested", tags=["tasks"]
+)
+async def request_organization_task(
+    organization_id: int, task_id: int, data: TaskUpdateRequest
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -205,8 +228,12 @@ async def request_organization_task(organization_id: int, task_id: int, data):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/verify")
-async def verify_organization_task(organization_id: int, task_id: int, task):
+@router.put(
+    "/organization/{organization_id}/tasks/{task_id}/update/verified", tags=["tasks"]
+)
+async def verify_organization_task(
+    organization_id: int, task_id: int, data: TaskUpdateVerify
+):
     try:
         with psycopg2.connect(
             database="postgres",
@@ -221,7 +248,7 @@ async def verify_organization_task(organization_id: int, task_id: int, task):
                     SET verified = %s
                     WHERE id = %s AND organization_id = %s
                 """,
-                    (task.verified, task_id, organization_id),
+                    (data.verified, task_id, organization_id),
                 )
                 return {"message": "Task verification updated successfully"}
     except psycopg2.Error as e:

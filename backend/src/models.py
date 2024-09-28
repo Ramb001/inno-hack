@@ -55,3 +55,23 @@ class Task(BaseModel):
     organization_id: int
     deadline: str
     workers: List[int]
+
+
+class TaskUpdateStatus(BaseModel):
+    status: str
+
+
+class TaskUpdateDeadline(BaseModel):
+    deadline: str
+
+
+class TaskUpdateWorkers(BaseModel):
+    workers: List[int]
+
+
+class TaskUpdateRequest(BaseModel):
+    requested: bool
+
+
+class TaskUpdateVerify(BaseModel):
+    verified: bool
