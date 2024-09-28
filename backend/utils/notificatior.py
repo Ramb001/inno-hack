@@ -15,9 +15,13 @@ class EmailNotificatior:
         self.smtp = SMTP()
 
     def send_email(self):
-        self.smtp.connect("smtp.yandex.ru", 587)
+        self.smtp.connect("smtp.yandex.ru", 465)
         date = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
-        msg = f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}"
+        msg = MIMEText(
+            f"From: {self.email}\nTo: {self.receiver}\nSubject: New task was added\nDate: {date}\n\n{self.message}",
+            "plain",
+            "utf-8",
+        )
 
         try:
             self.smtp.login(self.email, self.password)
