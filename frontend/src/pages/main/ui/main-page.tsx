@@ -1,3 +1,11 @@
+import { TaskCard } from "@/components/task-card";
+
 export const MainPage = () => {
-  return <section>asdasd</section>;
+  return (
+    <section>
+      <TaskCard />
+      <TaskCard />
+      <TaskCard />
+    </section>
+  );
 };
