@@ -1,22 +1,14 @@
-# Step 1: Use Node.js base image
+# Этап 1: Сборка и запуск приложения
 FROM node:18
 
-# Step 2: Set the working directory
 WORKDIR /app
 
-# Step 3: Copy package.json and package-lock.json (or yarn.lock) to the working directory
-COPY package.json ./
-COPY package-lock.json ./ # If you are using npm
-# COPY yarn.lock ./ # If you are using Yarn
+COPY ./frontend/package.json ./frontend/package-lock.json ./
 
-# Step 4: Install dependencies
-RUN npm install # Or RUN yarn install if you're using Yarn
+RUN npm install
 
-# Step 5: Copy the rest of your application files to the working directory
-COPY . .
+COPY ./frontend ./
 
-# Step 6: Expose the port your app runs on (default for React is 3000)
-EXPOSE 80
+EXPOSE 5173
 
-# Step 7: Command to run your app
 CMD ["npm", "run", "dev"]
