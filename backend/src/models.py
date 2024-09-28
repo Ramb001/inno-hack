@@ -25,6 +25,7 @@ class OrganizationWithWorkers(BaseModel):
     organization: Organization
     workers: List[OrganizationWorker]
 
+
 class Register(BaseModel):
     username: str
     password: str
@@ -35,3 +36,9 @@ class Register(BaseModel):
 class Login(BaseModel):
     username: str
     password: str
+
+
+class UserOrganization(BaseModel):
+    id: int
+    name: str
+    role: str
