@@ -30,14 +30,4 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
-    logging.info("Starting application...")
-
-    try:
-        logging.info("Creating tables...")
-        create_tables_result = create_tables()
-        if create_tables_result:
-            logging.info("Tables created successfully")
-        else:
-            logging.error("Failed to create tables")
-    except Exception as e:
-        logging.error(f"An error occurred during startup: {e}")
+    create_tables()
