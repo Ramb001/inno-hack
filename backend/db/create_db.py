@@ -1,11 +1,12 @@
 import os
 import psycopg2
+import logging
 
 
 def create_tables():
     commands = (
-        """"
-        CREATE TABLE users (
+        """
+        CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,
             username VARCHAR(255) NOT NULL,
             password VARCHAR(255) NOT NULL,
@@ -14,7 +15,7 @@ def create_tables():
         )
         """,
         """
-        CREATE TABLE organizations (
+        CREATE TABLE IF NOT EXISTS organizations (
             id SERIAL PRIMARY KEY,
             ref_link VARCHAR(255) UNIQUE,
             name VARCHAR(255) NOT NULL,
@@ -22,7 +23,7 @@ def create_tables():
         )
         """,
         """
-        CREATE TABLE organization_workers (
+        CREATE TABLE IF NOT EXISTS organization_workers (
             organization_id INTEGER NOT NULL,
             role VARCHAR(50),
             worker_id INTEGER NOT NULL,
@@ -36,7 +37,7 @@ def create_tables():
         with psycopg2.connect(
             database="postgres",
             user="postgres",
-            host="127.0.0.1",
+            host="postgres",
             port="5432",
             password="postgres",
         ) as conn:
@@ -46,15 +47,15 @@ def create_tables():
                         cur.execute("BEGIN;")
                         cur.execute(command)
                         cur.execute("COMMIT;")
-                        print(f"Команда выполнена: {command}")
+                        logging.info(f"Команда выполнена: {command}")
                     except (psycopg2.DatabaseError, Exception) as error:
-                        print(f"Ошибка при выполнении команды: {command}")
-                        print(error)
+                        logging.error(f"Ошибка при выполнении команды: {command}")
+                        logging.error(error)
                         cur.execute("ROLLBACK;")
 
                 return True
     except (psycopg2.DatabaseError, Exception) as conn_error:
-        print("Ошибка подключения к базе данных")
-        print(conn_error)
+        logging.error("Ошибка подключения к базе данных")
+        logging.error(conn_error)
 
         return False

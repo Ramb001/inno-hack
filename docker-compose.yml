@@ -1,12 +1,15 @@
+version: "3.9"
+
 services:
   postgres:
-    image: postgres:15
+    image: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
       PGDATA: /data/postgres
     volumes:
-      - postgres_data:/data/postgres
+      - ./postgres:/data/postgres
     ports:
       - "5432:5432"
     networks:
@@ -23,7 +26,13 @@ services:
     networks:
       - app-network
     depends_on:
-      - postgres
+      - postgres # Убедитесь, что PostgreSQL запускается перед бэкендом
+    # Можно добавить healthcheck, чтобы дождаться полной готовности PostgreSQL
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   frontend:
     build:
@@ -41,7 +50,8 @@ services:
     networks:
       - app-network
     depends_on:
-      - postgres
+      - postgres # Убедитесь, что PostgreSQL запускается перед ботом
+    # Здесь также можно добавить healthcheck, если необходимо
 
 networks:
   app-network:
