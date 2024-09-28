@@ -1,5 +1,6 @@
 import os
 import psycopg2
+import logging
 
 
 def create_tables():
@@ -46,15 +47,15 @@ def create_tables():
                         cur.execute("BEGIN;")
                         cur.execute(command)
                         cur.execute("COMMIT;")
-                        print(f"Команда выполнена: {command}")
+                        logging.info(f"Команда выполнена: {command}")
                     except (psycopg2.DatabaseError, Exception) as error:
-                        print(f"Ошибка при выполнении команды: {command}")
-                        print(error)
+                        logging.error(f"Ошибка при выполнении команды: {command}")
+                        logging.error(error)
                         cur.execute("ROLLBACK;")
 
                 return True
     except (psycopg2.DatabaseError, Exception) as conn_error:
-        print("Ошибка подключения к базе данных")
-        print(conn_error)
+        logging.error("Ошибка подключения к базе данных")
+        logging.error(conn_error)
 
         return False
