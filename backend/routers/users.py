@@ -7,7 +7,7 @@ from src.models import Register, Login
 router = APIRouter()
 
 
-@router.post("/users/register")
+@router.post("/users/register", tags=["users"])
 async def create_user(user: Register):
     try:
         with psycopg2.connect(
@@ -26,7 +26,7 @@ async def create_user(user: Register):
         cur.execute("ROLLBACK;")
 
 
-@router.post("/users/login")
+@router.post("/users/login", tags=["users"])
 async def login_user(user: Login):
     try:
         with psycopg2.connect(
