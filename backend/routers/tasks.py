@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 import psycopg2
-
+from utils import create_task_notification, update_task_status_notification
 from src.models import (
     Task,
     TaskUpdateStatus,
@@ -75,12 +75,23 @@ async def create_organization_task(organization_id: int, task: Task):
             password="postgres",
         ) as conn:
             with conn.cursor() as cur:
+                # Проверка, существует ли организация
+                cur.execute(
+                    """
+                    SELECT id FROM organizations WHERE id = %s
+                    """,
+                    (organization_id,),
+                )
+                if cur.fetchone() is None:
+                    raise HTTPException(status_code=404, detail="Organization not found")
+
+                # Вставка задачи
                 cur.execute(
                     """
                     INSERT INTO tasks (title, description, status, organization_id, deadline, workers)
                     VALUES (%s, %s, %s, %s, %s, %s)
                     RETURNING id
-                """,
+                    """,
                     (
                         task.title,
                         task.description,
@@ -92,27 +103,28 @@ async def create_organization_task(organization_id: int, task: Task):
                 )
                 task_id = cur.fetchone()[0]
 
+                # Получение email'ов работников
                 emails = []
-
                 for worker in task.workers:
                     cur.execute(
                         """
-                    SELECT u.email
-                    FROM users u
-                    WHERE id = %s
-                """,
+                        SELECT u.email
+                        FROM users u
+                        WHERE id = %s
+                        """,
                         (worker,),
                     )
                     row = cur.fetchone()
-                    emails.append(row[0])
+                    if row:  # Проверяем, что строка найдена
+                        emails.append(row[0])
 
+                # Создание и отправка уведомления
+                msg = create_task_notification(task.title, task.description, task.deadline)
                 email_notification = EmailNotificatior(
-                    title=task.title,
-                    description=task.description,
-                    deadline=task.deadline,
                     receivers=emails,
+                    message=msg
                 )
-                email_notification.send_email()
+                email_notification.send_email('Новая задача создана!')
                 return {
                     "message": "Task created successfully",
                     "task_id": task_id,
@@ -141,9 +153,32 @@ async def update_organization_task(
                     UPDATE tasks
                     SET status = %s
                     WHERE id = %s AND organization_id = %s
-                """,
+                    RETURNING title;
+                    """,
                     (data.status, task_id, organization_id),
                 )
+                task_title  = cur.fetchone()[0]
+
+                cur.execute(
+                    """
+                    SELECT u.email
+                    FROM tasks t
+                    JOIN organization_workers ow ON ow.organization_id = t.organization_id
+                    JOIN users u ON u.id = ow.worker_id
+                    WHERE t.id = %s;
+                    """,
+                    (task_id,),
+                )
+                
+                emails = cur.fetchall()
+                emails = [email[0] for email in cur.fetchall()]
+
+                msg = update_task_status_notification(task_title, data.status)
+                email_notification = EmailNotificatior(
+                    receivers=emails,
+                    message=msg
+                )
+                email_notification.send_email('Новая задача создана!')
                 return {"message": "Task status updated successfully"}
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
