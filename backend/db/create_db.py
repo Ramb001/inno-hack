@@ -28,7 +28,6 @@ def create_tables():
             organization_id INTEGER NOT NULL,
             role VARCHAR(50),
             worker_id INTEGER NOT NULL,
-            PRIMARY KEY (organization_id, worker_id),
             FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE
         )
         """,
@@ -37,7 +36,6 @@ def create_tables():
             id SERIAL PRIMARY KEY,
             org_id INTEGER NOT NULL,
             status VARCHAR(255),
-        PRIMARY KEY (org_id),
         FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
         );
         """,
