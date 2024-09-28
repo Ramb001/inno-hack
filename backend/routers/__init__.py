@@ -1,1 +1,1 @@
-from . import users, organizations, tasks
+from . import users, organizations, tasks, notifications

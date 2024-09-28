@@ -10,6 +10,8 @@ from src.models import (
     TaskUpdateVerify,
 )
 
+from .notifications import EmailNotification
+
 router = APIRouter()
 
 
@@ -89,6 +91,12 @@ async def create_organization_task(organization_id: int, task: Task):
                     ),
                 )
                 task_id = cur.fetchone()[0]
+                email_notification = EmailNotification(
+                    email="example@example.com",
+                    message="New task was added",
+                    receiver="example@example.com",
+                )
+                email_notification.send_email()
                 return {
                     "message": "Task created successfully",
                     "task_id": task_id,
