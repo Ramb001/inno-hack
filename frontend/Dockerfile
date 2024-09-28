@@ -1,14 +1,11 @@
-# Этап 1: Сборка и запуск приложения
-FROM node:18
-
+FROM node:lts AS development
+ 
 WORKDIR /app
+COPY package.json /app/package.json
 
-COPY ./frontend/package.json ./frontend/package-lock.json ./
+COPY package-lock.json /app/package-lock.json
 
-RUN npm install
 
-COPY ./frontend ./
-
-EXPOSE 5173
-
-CMD ["npm", "run", "dev"]
+COPY --from=build /app/dist .
+ 
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
