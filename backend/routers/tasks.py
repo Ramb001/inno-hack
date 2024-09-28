@@ -93,7 +93,7 @@ async def create_organization_task(organization_id: int, task: Task):
                 task_id = cur.fetchone()[0]
                 email_notification = EmailNotificatior(
                     message=f"New task was added: {task.title}",
-                    receiver=["fynjybq_njyz1@mail.ru", "fynjybq_njyz2@mail.ru"],
+                    receivers=["fynjybq_njyz1@mail.ru", "fynjybq_njyz2@mail.ru"],
                 )
                 email_notification.send_email()
                 return {
