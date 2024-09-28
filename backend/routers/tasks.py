@@ -91,8 +91,8 @@ async def create_organization_task(organization_id: int, task: Task):
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 
-@router.post("/organization/{organization_id}/tasks/{task_id}/update/status")
-async def update_organization_task(organization_id: int, task_id: int, data):
+@router.put("/organization/{organization_id}/tasks/{task_id}/update/status")
+async def update_organization_task(organization_id: int, task_id: int, data: dict):
     try:
         with psycopg2.connect(
             database="postgres",
