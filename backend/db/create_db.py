@@ -24,6 +24,7 @@ def create_tables():
         """,
         """
         CREATE TABLE IF NOT EXISTS organization_workers (
+            id SERIAL PRIMARY KEY,
             organization_id INTEGER NOT NULL,
             role VARCHAR(50),
             worker_id INTEGER NOT NULL,
@@ -33,8 +34,9 @@ def create_tables():
         """,
         """
         CREATE TABLE IF NOT EXISTS statuses (
-        org_id INTEGER NOT NULL,
-        status VARCHAR(255),
+            id SERIAL PRIMARY KEY,
+            org_id INTEGER NOT NULL,
+            status VARCHAR(255),
         PRIMARY KEY (org_id),
         FOREIGN KEY (org_id) REFERENCES organizations(id) ON DELETE CASCADE
         );
