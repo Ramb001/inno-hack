@@ -255,3 +255,131 @@ async def create_organization_status(
         raise HTTPException(
             status_code=500, detail=f"Ошибка при создании статуса: {str(error)}"
         )
+
+@router.post(
+    "/organizations/{organization_id}/join/{user_id}", tags=["organizations"]
+)
+async def join_organization(organization_id: int, user_id: int, data: OrganizationWorkerCreate):
+    try:
+        with psycopg2.connect(
+            database="postgres", user="postgres", host="postgres", password="postgres"
+        ) as conn:
+            with conn.cursor() as cur:
+                # Check if the organization exists
+                cur.execute(
+                    "SELECT id FROM organizations WHERE id = %s",
+                    (organization_id,),
+                )
+                org_exists = cur.fetchone()
+
+                if not org_exists:
+                    raise HTTPException(status_code=404, detail="Организация не найдена")
+
+                # Check if the user exists
+                cur.execute(
+                    "SELECT id FROM users WHERE id = %s",
+                    (user_id,),
+                )
+                user_exists = cur.fetchone()
+
+                if not user_exists:
+                    raise HTTPException(status_code=404, detail="Пользователь не найден")
+
+                # Check if the user is already in the organization
+                cur.execute(
+                    "SELECT organization_id FROM organization_workers WHERE organization_id = %s AND worker_id = %s",
+                    (organization_id, user_id),
+                )
+                existing_worker = cur.fetchone()
+
+                if existing_worker:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Пользователь уже состоит в этой организации",
+                    )
+
+                # Add the user to the organization
+                cur.execute(
+                    "INSERT INTO organization_workers (organization_id, role, worker_id) VALUES (%s, %s, %s)",
+                    (organization_id, data.role, user_id),
+                )
+                conn.commit()
+
+                return {"message": "Вы успешно присоединились к организации"}
+    except (psycopg2.DatabaseError, Exception) as error:
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при присоединении к организации: {str(error)}"
+        )
+
+@router.delete(
+    "/organizations/{organization_id}/remove/user/{user_id}", tags=["organizations"]
+)
+async def remove_worker_from_organization(organization_id: int, user_id: int):
+    try:
+        with psycopg2.connect(
+            database="postgres", user="postgres", host="postgres", password="postgres"
+        ) as conn:
+            with conn.cursor() as cur:
+                # Check if the organization exists
+                cur.execute(
+                    "SELECT id FROM organizations WHERE id = %s",
+                    (organization_id,),
+                )
+                org_exists = cur.fetchone()
+
+                if not org_exists:
+                    raise HTTPException(status_code=404, detail="Организация не найдена")
+
+                # Check if the worker is part of the organization
+                cur.execute(
+                    "SELECT id FROM organization_workers WHERE organization_id = %s AND worker_id = %s",
+                    (organization_id, user_id),
+                )
+                worker_exists = cur.fetchone()
+
+                if not worker_exists:
+                    raise HTTPException(status_code=404, detail="Работник не найден в организации")
+
+                # Remove the worker from the organization
+                cur.execute(
+                    "DELETE FROM organization_workers WHERE organization_id = %s AND worker_id = %s",
+                    (organization_id, user_id),
+                )
+                conn.commit()
+
+                return {"message": "Работник успешно удален из организации"}
+    except (psycopg2.DatabaseError, Exception) as error:
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при удалении работника: {str(error)}"
+        )
+
+
+@router.delete("/organizations/{organization_id}", tags=["organizations"])
+async def delete_organization(organization_id: int):
+    try:
+        with psycopg2.connect(
+            database="postgres", user="postgres", host="postgres", password="postgres"
+        ) as conn:
+            with conn.cursor() as cur:
+                # Check if the organization exists
+                cur.execute(
+                    "SELECT id FROM organizations WHERE id = %s",
+                    (organization_id,),
+                )
+                org_exists = cur.fetchone()
+
+                if not org_exists:
+                    raise HTTPException(status_code=404, detail="Организация не найдена")
+
+                # Delete the organization
+                cur.execute(
+                    "DELETE FROM organizations WHERE id = %s",
+                    (organization_id,),
+                )
+                conn.commit()
+
+                return {"message": "Организация успешно удалена"}
+    except (psycopg2.DatabaseError, Exception) as error:
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при удалении организации: {str(error)}"
+        )
