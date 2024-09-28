@@ -40,7 +40,11 @@ services:
       context: .
       dockerfile: ./frontend/Dockerfile
     ports:
+<<<<<<< Updated upstream
       - "5173:5173"
+=======
+      - "5173:80"
+>>>>>>> Stashed changes
     networks:
       - app-network
 
