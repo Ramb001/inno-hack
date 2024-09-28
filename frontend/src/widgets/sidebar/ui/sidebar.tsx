@@ -2,8 +2,7 @@ import { useGetOrganizationQuery } from "@/api/organization-api/organization-api
 import { OrganizationCreate } from "@/components/organization/organization-create";
 import { OrganizationItem } from "@/components/organization/organization-item";
 
-import { Button } from "@/shared/ui/button";
-import { HomeIcon, PlusSquare, Settings, UserRound } from "lucide-react";
+import { HomeIcon, Settings, UserRound } from "lucide-react";
 
 export const Sidebar = () => {
   const { data: organizations } = useGetOrganizationQuery();
