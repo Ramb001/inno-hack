@@ -13,7 +13,7 @@ type TaskCardProps = {
 };
 
 export const TaskCard = (props: TaskCardProps) => {
-  const { task } = props;
+  const {} = props;
 
   return (
     <Card>
