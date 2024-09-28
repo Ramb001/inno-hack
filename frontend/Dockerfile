@@ -4,7 +4,6 @@ FROM node:18 AS builder
 WORKDIR /app
 
 COPY ./frontend/package.json ./frontend/yarn.lock ./
-COPY ./frontend/nginx.conf /etc/nginx/nginx.conf
 
 RUN yarn install
 
@@ -13,6 +12,8 @@ COPY ./frontend ./
 RUN yarn build
 
 FROM nginx:latest
+
+COPY ./frontend/nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
