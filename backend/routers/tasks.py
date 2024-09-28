@@ -93,6 +93,9 @@ async def create_organization_task(organization_id: int, task: Task):
 
 @router.put("/organization/{organization_id}/tasks/{task_id}/update/status")
 async def update_organization_task(organization_id: int, task_id: int, data: dict):
+    status = data.get("status")
+    if status is None:
+        raise HTTPException(status_code=400, detail="Status is required")
     try:
         with psycopg2.connect(
             database="postgres",
