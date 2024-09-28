@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from db import create_tables
-from routers import users
+from routers import users, organizations 
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -13,6 +13,7 @@ logging.basicConfig(
 
 app = FastAPI()
 app.include_router(users.router)
+app.include_router(organizations.router)
 
 origins = ["*"]
 

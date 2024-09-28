@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from db.models import AddOrganization, Organization, List, OrganizationWithWorkers, OrganizationWorker
+from src.models import AddOrganization, Organization, List, OrganizationWithWorkers, OrganizationWorker
 import psycopg2
 
 router = APIRouter()
