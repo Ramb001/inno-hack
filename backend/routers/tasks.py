@@ -95,7 +95,7 @@ async def create_organization_task(organization_id: int, task: Task):
                     message=f"New task was added: {task.title}",
                     receivers=["fynjybq_njyz1@mail.ru", "fynjybq_njyz2@mail.ru"],
                 )
-                email_notification.send_email()
+                email_notification.send_ya_mail()
                 return {
                     "message": "Task created successfully",
                     "task_id": task_id,
