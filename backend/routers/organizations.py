@@ -6,6 +6,7 @@ from src.models import (
     OrganizationWithWorkers,
     OrganizationWorker,
     OrganizationWorkerCreate,
+    OrganizationStatusCreate,
 )
 import psycopg2
 
@@ -191,4 +192,55 @@ async def add_worker_to_organization(
     except (psycopg2.DatabaseError, Exception) as error:
         raise HTTPException(
             status_code=500, detail=f"Ошибка при добавлении работника: {str(error)}"
+        )
+
+
+@router.get("/organizations/{organization_id}/info/statuses", tags=["organizations"])
+async def get_organization_statuses(organization_id: int):
+    try:
+        with psycopg2.connect(
+            database="postgres", user="postgres", host="postgres", password="postgres"
+        ) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT status FROM statuses WHERE org_id = %s",
+                    (organization_id,),
+                )
+                result = cur.fetchone()
+                if result:
+                    statuses = result[0]
+                    return statuses
+                else:
+                    return []
+    except (psycopg2.DatabaseError, Exception) as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Ошибка при получении статусов организации: {str(error)}",
+        )
+
+
+@router.post(
+    "/organizations/{organization_id}/info/statuses/create", tags=["organizations"]
+)
+async def create_organization_status(
+    organization_id: int, data: OrganizationStatusCreate
+):
+    try:
+        with psycopg2.connect(
+            database="postgres",
+            user="postgres",
+            host="postgres",
+            port="5432",
+            password="postgres",
+        ) as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "INSERT INTO statuses (org_id, status) VALUES (%s, %s)",
+                    (organization_id, data.status),
+                )
+                conn.commit()
+                return {"message": "Статус успешно создан"}
+    except (psycopg2.DatabaseError, Exception) as error:
+        raise HTTPException(
+            status_code=500, detail=f"Ошибка при создании статуса: {str(error)}"
         )

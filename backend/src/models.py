@@ -75,3 +75,7 @@ class TaskUpdateRequest(BaseModel):
 
 class TaskUpdateVerify(BaseModel):
     verified: bool
+
+
+class OrganizationStatusCreate(BaseModel):
+    status: str
