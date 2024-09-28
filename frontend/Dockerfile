@@ -5,6 +5,8 @@ WORKDIR /app
 
 COPY ./frontend/package.json ./frontend/yarn.lock ./
 
+COPY ./frontend/nginx.conf /etc/nginx/nginx.conf
+
 RUN yarn install
 
 COPY ./frontend ./
@@ -13,7 +15,7 @@ RUN yarn build
 
 FROM nginx:latest
 
-COPY ./frontend/nginx.conf /etc/nginx/nginx.conf
+COPY ./frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
